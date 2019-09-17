@@ -1,0 +1,7 @@
+{
+  "serviceName": "Food Safety Sample",
+  "loggingLevel": "debug",
+  "telemetryEndpoint": "",
+  "telemetryDataStoreName": "",
+  "port": "8080"
+}
