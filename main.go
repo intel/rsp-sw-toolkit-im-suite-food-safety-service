@@ -21,6 +21,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
 	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/config"
 

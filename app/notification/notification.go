@@ -1,0 +1,122 @@
+package notification
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/tag"
+)
+
+// Notification holds the body schema to post a notification event to EdgeX
+type Notification struct {
+	Slug     string   `json:"slug"`
+	Sender   string   `json:"sender"`
+	Category string   `json:"category"`
+	Severity string   `json:"severity"`
+	Content  string   `json:"content"`
+	Labels   []string `json:"labels"`
+}
+
+// Subscriber holds the body schema to register a subscriber to EdgeX
+type Subscriber struct {
+	Slug                 string     `json:"slug"`
+	Receiver             string     `json:"receiver"`
+	SubscribedCategories []string   `json:"subscribedCategories"`
+	SubscribedLabels     []string   `json:"subscribedLabels"`
+	Channels             []Channels `json:"channels"`
+}
+
+// Channels holds the body schema to specify different type of notification channels (email, SMS, REST post call)
+type Channels struct {
+	Type          string   `json:"type"`
+	URL           string   `json:"url"`
+	MailAddresses []string `json:"mailAddresses"`
+}
+
+// PostNotification sends a notification when group of tags reach freezer area
+// This leverages EdgeX Alerts & notification service
+func PostNotification(content string, notificationServiceURL string) error {
+
+	notification := Notification{
+		Slug:     "freezer-arrival-notification",
+		Labels:   []string{"RSP"},
+		Sender:   "ADMIN",
+		Category: "ARRIVAL",
+		Severity: "NORMAL",
+		Content:  content}
+
+	requestBody, err := json.Marshal(notification)
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(notificationServiceURL, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusAccepted {
+		return fmt.Errorf("POST error on notification endpoint, StatusCode %d", response.StatusCode)
+	}
+
+	return nil
+
+}
+
+// CreateBodyContent composes the body of the notification message
+func CreateBodyContent(tags []tag.Tag, temperature float32, readerAlias string) string {
+
+	// Extract EPC value from tags
+	epcSlice := make([]string, len(tags))
+	for _, val := range tags {
+		epcSlice = append(epcSlice, val.Epc)
+	}
+
+	body := ` 
+	Item(s) has reached the %s.
+	Current temperature in the area is %d.
+	EPC(s): %s
+	Date: %s
+	`
+	content := fmt.Sprintf(body, readerAlias, temperature, strings.Join(epcSlice, ","))
+
+	return content
+}
+
+// RegisterSubscriber registers a subscriber to EdgeX Alerts & notification service using email as channel
+func RegisterSubscriber(emails []string, notificationServiceURL string) error {
+
+	// Create requestBody
+	subscriber := new(Subscriber)
+	channels := Channels{Type: "EMAIL", MailAddresses: emails}
+
+	subscriber.Slug = "freezer-arrival-notification"
+	subscriber.Receiver = "USER"
+	subscriber.SubscribedCategories = []string{"ARRIVAL"}
+	subscriber.SubscribedLabels = []string{"RSP"}
+	subscriber.Channels = []Channels{channels}
+
+	requestBody, err := json.Marshal(subscriber)
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(notificationServiceURL, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusCreated {
+		return fmt.Errorf("POST error on subscriber endpoint, StatusCode %d", response.StatusCode)
+	}
+
+	return nil
+
+}
