@@ -3,5 +3,8 @@
   "loggingLevel": "debug",
   "telemetryEndpoint": "",
   "telemetryDataStoreName": "",
-  "port": "8080"
+  "port": "8080",
+  "freezerReaderName": "RSP-150000",
+  "notificationServiceURL": "http://localhost:48060",
+  "emailSubscribers": "jose.antonio.martinez.torres@intel.com,sean.williams@intel.com"
 }

@@ -6,8 +6,16 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/tag"
+)
+
+const (
+	notificationEndPoint = "/api/v1/notification"
+	subscriptionEndPoint = "/api/v1/subscription"
+	notificationCategory = "SECURITY"
+	notificationSeverity = "CRITICAL"
 )
 
 // Notification holds the body schema to post a notification event to EdgeX
@@ -32,8 +40,8 @@ type Subscriber struct {
 // Channels holds the body schema to specify different type of notification channels (email, SMS, REST post call)
 type Channels struct {
 	Type          string   `json:"type"`
-	URL           string   `json:"url"`
-	MailAddresses []string `json:"mailAddresses"`
+	URL           string   `json:"url,omitempty"`
+	MailAddresses []string `json:"mailAddresses,omitempty"`
 }
 
 // PostNotification sends a notification when group of tags reach freezer area
@@ -41,11 +49,11 @@ type Channels struct {
 func PostNotification(content string, notificationServiceURL string) error {
 
 	notification := Notification{
-		Slug:     "freezer-arrival-notification",
+		Slug:     "freezer-arrival-notification-" + time.Now().String(),
 		Labels:   []string{"RSP"},
-		Sender:   "ADMIN",
-		Category: "ARRIVAL",
-		Severity: "NORMAL",
+		Sender:   "Food safety app",
+		Category: notificationCategory,
+		Severity: notificationSeverity,
 		Content:  content}
 
 	requestBody, err := json.Marshal(notification)
@@ -53,7 +61,7 @@ func PostNotification(content string, notificationServiceURL string) error {
 		return err
 	}
 
-	response, err := http.Post(notificationServiceURL, "application/json", bytes.NewBuffer(requestBody))
+	response, err := http.Post(notificationServiceURL+notificationEndPoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return err
 	}
@@ -97,8 +105,8 @@ func RegisterSubscriber(emails []string, notificationServiceURL string) error {
 
 	subscriber.Slug = "freezer-arrival-notification"
 	subscriber.Receiver = "USER"
-	subscriber.SubscribedCategories = []string{"ARRIVAL"}
-	subscriber.SubscribedLabels = []string{"RSP"}
+	subscriber.SubscribedCategories = []string{notificationCategory}
+	subscriber.SubscribedLabels = []string{notificationCategory}
 	subscriber.Channels = []Channels{channels}
 
 	requestBody, err := json.Marshal(subscriber)
@@ -106,14 +114,14 @@ func RegisterSubscriber(emails []string, notificationServiceURL string) error {
 		return err
 	}
 
-	response, err := http.Post(notificationServiceURL, "application/json", bytes.NewBuffer(requestBody))
+	response, err := http.Post(notificationServiceURL+subscriptionEndPoint, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		return err
 	}
 
 	defer response.Body.Close()
 
-	if response.StatusCode != http.StatusCreated {
+	if response.StatusCode != http.StatusCreated && response.StatusCode != http.StatusConflict {
 		return fmt.Errorf("POST error on subscriber endpoint, StatusCode %d", response.StatusCode)
 	}
 

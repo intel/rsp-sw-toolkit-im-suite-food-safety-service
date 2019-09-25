@@ -20,10 +20,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
 	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/config"
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/notification"
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/tag"
 
 	"os"
 	"time"
@@ -43,13 +47,13 @@ const (
 )
 
 const (
-	todo = "TODO"
+	inventoryEvent = "inventory_event"
 )
 
 var (
 	// Filter data by value descriptors (aka device resource name)
 	valueDescriptors = []string{
-		todo,
+		inventoryEvent,
 	}
 )
 
@@ -69,6 +73,12 @@ func main() {
 		"Method": "main",
 		"Action": "Start",
 	}).Info("Starting Food Safety Sample...")
+
+	// Register a subscriber to EdgeX notification service
+	emails := strings.Split(config.AppConfig.EmailSubscribers, ",")
+	if err := notification.RegisterSubscriber(emails, config.AppConfig.NotificationServiceURL); err != nil {
+		log.Fatalf("Unable to register subscriber in EdgeX: %s", err)
+	}
 
 	// Connect to EdgeX zeroMQ bus
 	receiveZMQEvents()
@@ -94,27 +104,27 @@ func initMetrics() {
 
 func receiveZMQEvents() {
 
-	go func() {
+	//go func() {
 
-		//Initialized EdgeX apps functionSDK
-		edgexSdk := &appsdk.AppFunctionsSDK{ServiceKey: serviceKey}
-		if err := edgexSdk.Initialize(); err != nil {
-			edgexSdk.LoggingClient.Error(fmt.Sprintf("SDK initialization failed: %v", err))
-			os.Exit(-1)
-		}
+	//Initialized EdgeX apps functionSDK
+	edgexSdk := &appsdk.AppFunctionsSDK{ServiceKey: serviceKey}
+	if err := edgexSdk.Initialize(); err != nil {
+		edgexSdk.LoggingClient.Error(fmt.Sprintf("SDK initialization failed: %v", err))
+		os.Exit(-1)
+	}
 
-		edgexSdk.SetFunctionsPipeline(
-			transforms.NewFilter(valueDescriptors).FilterByValueDescriptor,
-			processEvents,
-		)
+	edgexSdk.SetFunctionsPipeline(
+		transforms.NewFilter(valueDescriptors).FilterByValueDescriptor,
+		processEvents,
+	)
 
-		err := edgexSdk.MakeItRun()
-		if err != nil {
-			edgexSdk.LoggingClient.Error("MakeItRun returned error: ", err.Error())
-			os.Exit(-1)
-		}
+	err := edgexSdk.MakeItRun()
+	if err != nil {
+		edgexSdk.LoggingClient.Error("MakeItRun returned error: ", err.Error())
+		os.Exit(-1)
+	}
 
-	}()
+	//}()
 }
 
 func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
@@ -129,8 +139,28 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 
 	for _, reading := range event.Readings {
 		switch reading.Name {
-		case todo:
+		case inventoryEvent:
 			logrus.Debugf("todo data received: %s", string(reading.Value))
+
+			var invData tag.InventoryEvent
+			if err := json.Unmarshal([]byte(reading.Value), &invData); err != nil {
+				log.Errorf("Unable to unmarshal inventory event. %s", err)
+			}
+
+			// Check if the tag reaches its destination zone
+			var tagsInFreezer []tag.Tag
+			for _, tagData := range invData.Data {
+				if reached := tag.TagReachedFreezer(tagData, config.AppConfig.FreezerReaderName); reached {
+					tagsInFreezer = append(tagsInFreezer, tagData)
+				}
+			}
+
+			// Send notification to EdgeX
+			bodyContent := notification.CreateBodyContent(tagsInFreezer, 15.5, "freezer")
+			if err := notification.PostNotification(bodyContent, config.AppConfig.NotificationServiceURL); err != nil {
+				log.Errorf("Unable to send notification to EdgeX. %s", err)
+			}
+
 			break
 		}
 	}

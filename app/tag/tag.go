@@ -1,6 +1,13 @@
 package tag
 
-import "time"
+import (
+	"time"
+)
+
+// InventoryEvent holds EdgeX events schema
+type InventoryEvent struct {
+	Data []Tag `json:"data"`
+}
 
 // Tag is the model containing items for a RFID Tag
 type Tag struct {
@@ -49,7 +56,15 @@ type LocationHistory struct {
 	Source    string `json:"source"`
 }
 
-func tagReachedFreezer(tag Tag, freezerSensorName string) bool {
+func TagReachedFreezer(tag Tag, freezerSensorName string) bool {
+
+	if len(tag.LocationHistory) > 0 {
+
+		if tag.LocationHistory[0].Source == freezerSensorName {
+			return true
+		}
+
+	}
 
 	return false
 }
