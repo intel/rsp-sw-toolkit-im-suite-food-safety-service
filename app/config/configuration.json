@@ -1,10 +1,11 @@
 {
-  "serviceName": "Food Safety Sample",
-  "loggingLevel": "debug",
-  "telemetryEndpoint": "",
-  "telemetryDataStoreName": "",
-  "port": "8080",
-  "freezerReaderName": "RSP-150000",
-  "notificationServiceURL": "http://localhost:48060",
-  "emailSubscribers": "jose.antonio.martinez.torres@intel.com,sean.williams@intel.com"
-}
+    "serviceName": "Food Safety Sample",
+    "loggingLevel": "debug",
+    "telemetryEndpoint": "",
+    "telemetryDataStoreName": "",
+    "port": "8080",
+    "freezerReaderName": "RSP-150000-0",
+    "notificationServiceURL": "http://localhost:48060",
+    "emailSubscribers": "antoniomtz86@gmail.com"
+  }
+  

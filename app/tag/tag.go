@@ -60,7 +60,7 @@ func TagReachedFreezer(tag Tag, freezerSensorName string) bool {
 
 	if len(tag.LocationHistory) > 0 {
 
-		if tag.LocationHistory[0].Source == freezerSensorName {
+		if tag.LocationHistory[0].Location == freezerSensorName {
 			return true
 		}
 

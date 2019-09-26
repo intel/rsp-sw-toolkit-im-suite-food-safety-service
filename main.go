@@ -104,8 +104,6 @@ func initMetrics() {
 
 func receiveZMQEvents() {
 
-	//go func() {
-
 	//Initialized EdgeX apps functionSDK
 	edgexSdk := &appsdk.AppFunctionsSDK{ServiceKey: serviceKey}
 	if err := edgexSdk.Initialize(); err != nil {
@@ -124,7 +122,6 @@ func receiveZMQEvents() {
 		os.Exit(-1)
 	}
 
-	//}()
 }
 
 func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (bool, interface{}) {
@@ -140,7 +137,7 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 	for _, reading := range event.Readings {
 		switch reading.Name {
 		case inventoryEvent:
-			logrus.Debugf("todo data received: %s", string(reading.Value))
+			logrus.Debugf("inventory-event data received: %s", string(reading.Value))
 
 			var invData tag.InventoryEvent
 			if err := json.Unmarshal([]byte(reading.Value), &invData); err != nil {

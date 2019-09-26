@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
 	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/tag"
 )
 
@@ -47,6 +48,8 @@ type Channels struct {
 // PostNotification sends a notification when group of tags reach freezer area
 // This leverages EdgeX Alerts & notification service
 func PostNotification(content string, notificationServiceURL string) error {
+
+	log.Debug("Sending notification to EdgeX...")
 
 	notification := Notification{
 		Slug:     "freezer-arrival-notification-" + time.Now().String(),
