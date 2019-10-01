@@ -17,6 +17,7 @@ const (
 	subscriptionEndPoint = "/api/v1/subscription"
 	notificationCategory = "SECURITY"
 	notificationSeverity = "CRITICAL"
+	notificationLabel    = "FOOD-SAFETY"
 )
 
 // Notification holds the body schema to post a notification event to EdgeX
@@ -53,8 +54,8 @@ func PostNotification(content string, notificationServiceURL string) error {
 
 	notification := Notification{
 		Slug:     "freezer-arrival-notification-" + time.Now().String(),
-		Labels:   []string{"RSP"},
-		Sender:   "ADMIN",
+		Labels:   []string{notificationLabel},
+		Sender:   "Food Safety App",
 		Category: notificationCategory,
 		Severity: notificationSeverity,
 		Content:  content}
@@ -109,7 +110,7 @@ func RegisterSubscriber(emails []string, notificationServiceURL string) error {
 	subscriber.Slug = "freezer-arrival-notification"
 	subscriber.Receiver = "USER"
 	subscriber.SubscribedCategories = []string{notificationCategory}
-	subscriber.SubscribedLabels = []string{notificationCategory}
+	subscriber.SubscribedLabels = []string{notificationLabel}
 	subscriber.Channels = []Channels{channels}
 
 	requestBody, err := json.Marshal(subscriber)
