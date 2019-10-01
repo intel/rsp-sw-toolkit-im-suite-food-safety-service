@@ -54,7 +54,7 @@ func PostNotification(content string, notificationServiceURL string) error {
 	notification := Notification{
 		Slug:     "freezer-arrival-notification-" + time.Now().String(),
 		Labels:   []string{"RSP"},
-		Sender:   "Food safety app",
+		Sender:   "ADMIN",
 		Category: notificationCategory,
 		Severity: notificationSeverity,
 		Content:  content}
