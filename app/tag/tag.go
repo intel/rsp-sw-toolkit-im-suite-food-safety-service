@@ -2,6 +2,8 @@ package tag
 
 import (
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // InventoryEvent holds EdgeX events schema
@@ -61,9 +63,9 @@ func TagReachedFreezer(tag Tag, freezerSensorName string, trackingEPC string) bo
 	if len(tag.LocationHistory) > 0 {
 
 		if tag.LocationHistory[0].Location == freezerSensorName && tag.Epc == trackingEPC {
+			log.Debugf("EPC %s has arrived to destination", tag.Epc)
 			return true
 		}
-
 	}
 
 	return false

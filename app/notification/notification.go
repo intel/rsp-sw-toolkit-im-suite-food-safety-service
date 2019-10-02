@@ -83,6 +83,8 @@ func PostNotification(content string, notificationServiceURL string) error {
 // CreateBodyContent composes the body of the notification message
 func CreateBodyContent(tags []tag.Tag, temperature float32, readerAlias string) string {
 
+	currentTime := time.Now()
+
 	// Extract EPC value from tags
 	epcSlice := make([]string, len(tags))
 	for _, val := range tags {
@@ -91,11 +93,11 @@ func CreateBodyContent(tags []tag.Tag, temperature float32, readerAlias string) 
 
 	body := ` 
 	Item(s) has reached the %s.
-	Current temperature in the area is %d.
+	Current temperature in the area is %.2f.
 	EPC(s): %s
 	Date: %s
 	`
-	content := fmt.Sprintf(body, readerAlias, temperature, strings.Join(epcSlice, ","))
+	content := fmt.Sprintf(body, readerAlias, temperature, strings.Join(epcSlice, ","), currentTime.Format("2006-01-02 15:04:05 Monday"))
 
 	return content
 }

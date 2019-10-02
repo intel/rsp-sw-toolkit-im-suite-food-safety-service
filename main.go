@@ -153,9 +153,11 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 			}
 
 			// Send notification to EdgeX
-			bodyContent := notification.CreateBodyContent(tagsInFreezer, 15.5, "freezer")
-			if err := notification.PostNotification(bodyContent, config.AppConfig.NotificationServiceURL); err != nil {
-				log.Errorf("Unable to send notification to EdgeX. %s", err)
+			if len(tagsInFreezer) > 0 {
+				bodyContent := notification.CreateBodyContent(tagsInFreezer, 15.55, "freezer")
+				if err := notification.PostNotification(bodyContent, config.AppConfig.NotificationServiceURL); err != nil {
+					log.Errorf("Unable to send notification to EdgeX. %s", err)
+				}
 			}
 
 			break
