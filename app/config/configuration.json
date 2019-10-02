@@ -6,6 +6,7 @@
     "port": "8080",
     "freezerReaderName": "RSP-150000-0",
     "notificationServiceURL": "http://localhost:48060",
-    "emailSubscribers": "antoniomtz86@gmail.com"
+    "emailSubscribers": "antoniomtz86@gmail.com",
+    "epcTag": "30143639F8419145BEEF0002"
   }
   

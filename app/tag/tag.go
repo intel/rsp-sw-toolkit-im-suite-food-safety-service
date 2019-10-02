@@ -56,11 +56,11 @@ type LocationHistory struct {
 	Source    string `json:"source"`
 }
 
-func TagReachedFreezer(tag Tag, freezerSensorName string) bool {
+func TagReachedFreezer(tag Tag, freezerSensorName string, trackingEPC string) bool {
 
 	if len(tag.LocationHistory) > 0 {
 
-		if tag.LocationHistory[0].Location == freezerSensorName {
+		if tag.LocationHistory[0].Location == freezerSensorName && tag.Epc == trackingEPC {
 			return true
 		}
 

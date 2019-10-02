@@ -147,7 +147,7 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 			// Check if the tag reaches its destination zone
 			var tagsInFreezer []tag.Tag
 			for _, tagData := range invData.Data {
-				if reached := tag.TagReachedFreezer(tagData, config.AppConfig.FreezerReaderName); reached {
+				if reached := tag.TagReachedFreezer(tagData, config.AppConfig.FreezerReaderName, config.AppConfig.TrackingEPC); reached {
 					tagsInFreezer = append(tagsInFreezer, tagData)
 				}
 			}
