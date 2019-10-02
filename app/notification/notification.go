@@ -50,7 +50,7 @@ type Channels struct {
 // This leverages EdgeX Alerts & notification service
 func PostNotification(content string, notificationServiceURL string) error {
 
-	log.Debug("Sending notification to EdgeX...")
+	log.Info("Sending notification to EdgeX...")
 
 	notification := Notification{
 		Slug:     "freezer-arrival-notification-" + time.Now().String(),
@@ -81,7 +81,7 @@ func PostNotification(content string, notificationServiceURL string) error {
 }
 
 // CreateBodyContent composes the body of the notification message
-func CreateBodyContent(tags []tag.Tag, temperature float32, readerAlias string) string {
+func CreateBodyContent(tags []tag.Tag, temperature float64, readerAlias string) string {
 
 	currentTime := time.Now()
 

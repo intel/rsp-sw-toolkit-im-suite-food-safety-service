@@ -20,8 +20,10 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
@@ -55,6 +57,8 @@ var (
 	valueDescriptors = []string{
 		inventoryEvent,
 	}
+	// Global temperature value that is updated from EdgeX
+	currentTempValue = 0.0
 )
 
 func main() {
@@ -113,6 +117,7 @@ func receiveZMQEvents() {
 
 	edgexSdk.SetFunctionsPipeline(
 		transforms.NewFilter(valueDescriptors).FilterByValueDescriptor,
+		transforms.NewFilter([]string{config.AppConfig.TemperatureSensor}).FilterByDeviceName,
 		processEvents,
 	)
 
@@ -135,6 +140,8 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 	}
 
 	for _, reading := range event.Readings {
+
+		// RSP events
 		switch reading.Name {
 		case inventoryEvent:
 			logrus.Debugf("inventory-event data received: %s", string(reading.Value))
@@ -154,13 +161,32 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 
 			// Send notification to EdgeX
 			if len(tagsInFreezer) > 0 {
-				bodyContent := notification.CreateBodyContent(tagsInFreezer, 15.55, "freezer")
+				bodyContent := notification.CreateBodyContent(tagsInFreezer, currentTempValue, config.AppConfig.FreezerReaderName)
 				if err := notification.PostNotification(bodyContent, config.AppConfig.NotificationServiceURL); err != nil {
 					log.Errorf("Unable to send notification to EdgeX. %s", err)
 				}
 			}
 
 			break
+		}
+
+		// Temperature sensor events
+		switch reading.Device {
+
+		case config.AppConfig.TemperatureSensor:
+			// Value comes as base64
+			decodedValue, err := base64.StdEncoding.DecodeString(reading.Value)
+			if err != nil {
+				log.Errorf("Unable to decode temperature base64 value: %s", err)
+			}
+
+			currentTempValue, err = strconv.ParseFloat(string(decodedValue), 64)
+			if err != nil {
+				log.Error(err)
+			}
+
+			break
+
 		}
 	}
 
