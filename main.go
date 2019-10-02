@@ -21,9 +21,10 @@ package main
 
 import (
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"strconv"
+	"math"
 	"strings"
 
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
@@ -49,16 +50,18 @@ const (
 )
 
 const (
-	inventoryEvent = "inventory_event"
+	inventoryEvent   = "inventory_event"
+	temperatureEvent = "Temperature"
 )
 
 var (
 	// Filter data by value descriptors (aka device resource name)
 	valueDescriptors = []string{
 		inventoryEvent,
+		temperatureEvent,
 	}
 	// Global temperature value that is updated from EdgeX
-	currentTempValue = 0.0
+	currentTempValue float32
 )
 
 func main() {
@@ -117,7 +120,6 @@ func receiveZMQEvents() {
 
 	edgexSdk.SetFunctionsPipeline(
 		transforms.NewFilter(valueDescriptors).FilterByValueDescriptor,
-		transforms.NewFilter([]string{config.AppConfig.TemperatureSensor}).FilterByDeviceName,
 		processEvents,
 	)
 
@@ -168,10 +170,6 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 			}
 
 			break
-		}
-
-		// Temperature sensor events
-		switch reading.Device {
 
 		case config.AppConfig.TemperatureSensor:
 			// Value comes as base64
@@ -180,14 +178,13 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 				log.Errorf("Unable to decode temperature base64 value: %s", err)
 			}
 
-			currentTempValue, err = strconv.ParseFloat(string(decodedValue), 64)
-			if err != nil {
-				log.Error(err)
-			}
+			currentTempValue = math.Float32frombits(binary.BigEndian.Uint32(decodedValue))
 
 			break
-
 		}
+
+		// Temperature sensor events
+
 	}
 
 	return false, nil
