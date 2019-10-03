@@ -36,7 +36,6 @@ import (
 	"time"
 
 	"github.com/edgexfoundry/go-mod-core-contracts/models"
-	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/edgexfoundry/app-functions-sdk-go/appcontext"
@@ -146,7 +145,7 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 		// RSP events
 		switch reading.Name {
 		case inventoryEvent:
-			logrus.Debugf("inventory-event data received: %s", string(reading.Value))
+			log.Debugf("inventory-event data received: %s", string(reading.Value))
 
 			var invData tag.InventoryEvent
 			if err := json.Unmarshal([]byte(reading.Value), &invData); err != nil {
@@ -171,7 +170,8 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 
 			break
 
-		case config.AppConfig.TemperatureSensor:
+		// Temperature sensor events
+		case temperatureEvent:
 			// Value comes as base64
 			decodedValue, err := base64.StdEncoding.DecodeString(reading.Value)
 			if err != nil {
@@ -179,11 +179,10 @@ func processEvents(edgexcontext *appcontext.Context, params ...interface{}) (boo
 			}
 
 			currentTempValue = math.Float32frombits(binary.BigEndian.Uint32(decodedValue))
+			log.Debugf("Setting temperature %d", currentTempValue)
 
 			break
 		}
-
-		// Temperature sensor events
 
 	}
 

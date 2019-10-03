@@ -4,10 +4,10 @@
     "telemetryEndpoint": "",
     "telemetryDataStoreName": "",
     "port": "8080",
-    "freezerReaderName": "RSP-150000-0",
+    "freezerReaderName": "FREEZER",
     "notificationServiceURL": "http://localhost:48060",
     "emailSubscribers": "antoniomtz86@gmail.com",
-    "trackingEPC": "30143639F8419145BEEF0002",
+    "trackingEPC": "30143639F8419145BEEF0009",
     "temperatureSensor": "C1:EE:03:79:EA:8C"
   }
   
