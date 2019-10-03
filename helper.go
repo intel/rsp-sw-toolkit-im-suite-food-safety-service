@@ -20,11 +20,15 @@
 package main
 
 import (
+	"encoding/base64"
+	"encoding/binary"
 	"fmt"
+	golog "log"
+	"math"
+	"strings"
+
 	log "github.com/sirupsen/logrus"
 	"github.impcloud.net/RSP-Inventory-Suite/utilities/go-metrics"
-	golog "log"
-	"strings"
 )
 
 func errorHandler(message string, err error, errorGauge *metrics.Gauge) {
@@ -69,4 +73,16 @@ func setLoggingLevel(loggingLevel string) {
 
 	// Not using filtered func (Info, etc ) so that message is always logged
 	golog.Printf("Logging level set to %s\n", loggingLevel)
+}
+
+func base64TemperatureToFloat32(base64Value string) float32 {
+
+	decodedValue, err := base64.StdEncoding.DecodeString(base64Value)
+	if err != nil {
+		log.Errorf("Unable to decode temperature base64 value: %s", err)
+	}
+	tempValue := math.Float32frombits(binary.BigEndian.Uint32(decodedValue))
+	log.Debugf("Setting temperature %f", tempValue)
+
+	return tempValue
 }

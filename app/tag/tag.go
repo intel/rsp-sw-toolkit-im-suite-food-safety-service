@@ -58,11 +58,14 @@ type LocationHistory struct {
 	Source    string `json:"source"`
 }
 
-func TagReachedFreezer(tag Tag, freezerSensorName string, trackingEPC string) bool {
+// ReachedFreezer verifies if tag's current location is in freezerSensorName (destination) and it's a tracking epc
+func ReachedFreezer(tag Tag, freezerSensorName string, trackingEPCs map[string]interface{}) bool {
 
 	if len(tag.LocationHistory) > 0 {
 
-		if tag.LocationHistory[0].Location == freezerSensorName && tag.Epc == trackingEPC {
+		_, trackedEPC := trackingEPCs[tag.Epc]
+
+		if tag.LocationHistory[0].Location == freezerSensorName && trackedEPC {
 			log.Debugf("EPC %s has arrived to destination", tag.Epc)
 			return true
 		}

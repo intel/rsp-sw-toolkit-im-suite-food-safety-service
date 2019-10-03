@@ -26,9 +26,9 @@ import (
 
 type (
 	variables struct {
-		ServiceName, LoggingLevel, Port, TrackingEPC, TemperatureSensor string
-		TelemetryEndpoint, TelemetryDataStoreName                       string
-		FreezerReaderName, NotificationServiceURL, EmailSubscribers     string
+		ServiceName, LoggingLevel, TrackingEPCs, TemperatureSensor  string
+		TelemetryEndpoint, TelemetryDataStoreName                   string
+		FreezerReaderName, NotificationServiceURL, EmailSubscribers string
 	}
 )
 
@@ -46,11 +46,6 @@ func InitConfig() error {
 	}
 
 	AppConfig.ServiceName, err = config.GetString("serviceName")
-	if err != nil {
-		return errors.Wrapf(err, "Unable to load config variables: %s", err.Error())
-	}
-
-	AppConfig.Port, err = config.GetString("port")
 	if err != nil {
 		return errors.Wrapf(err, "Unable to load config variables: %s", err.Error())
 	}
@@ -86,7 +81,7 @@ func InitConfig() error {
 		return errors.Wrapf(err, "Unable to load config variables: %s", err.Error())
 	}
 
-	AppConfig.TrackingEPC, err = config.GetString("trackingEPC")
+	AppConfig.TrackingEPCs, err = config.GetString("trackingEPCs")
 	if err != nil {
 		return errors.Wrapf(err, "Unable to load config variables: %s", err.Error())
 	}

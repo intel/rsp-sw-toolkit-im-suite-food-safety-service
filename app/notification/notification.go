@@ -80,7 +80,7 @@ func PostNotification(content string, notificationServiceURL string) error {
 
 }
 
-// CreateBodyContent composes the body of the notification message
+// CreateBodyContent composes the body for the notification message
 func CreateBodyContent(tags []tag.Tag, temperature float32, readerAlias string) string {
 
 	currentTime := time.Now()

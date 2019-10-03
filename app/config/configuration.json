@@ -2,12 +2,11 @@
     "serviceName": "Food Safety Sample",
     "loggingLevel": "debug",
     "telemetryEndpoint": "",
-    "telemetryDataStoreName": "",
-    "port": "8080",
+    "telemetryDataStoreName": "",    
     "freezerReaderName": "FREEZER",
     "notificationServiceURL": "http://localhost:48060",
-    "emailSubscribers": "antoniomtz86@gmail.com",
-    "trackingEPC": "30143639F8419145BEEF0009",
+    "emailSubscribers": "your_email,second_email",
+    "trackingEPCs": "30143639F8419145BEEF0009,30143639F8419145BEEF0007",
     "temperatureSensor": "C1:EE:03:79:EA:8C"
   }
   
