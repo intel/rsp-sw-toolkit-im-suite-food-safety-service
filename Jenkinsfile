@@ -6,7 +6,7 @@ rrpBuildGoCode {
     dockerImageName = "rsp/${projectKey}"
     ecrRegistry = "280211473891.dkr.ecr.us-west-2.amazonaws.com"
     customBuildScript = "./build.sh"
-    protexProjectName = 'bb-food-safety-sample'
+    protexProjectName = 'bb-food-safety-service'
 
 
     infra = [
