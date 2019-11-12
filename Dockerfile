@@ -33,10 +33,10 @@ COPY --from=builder /usr/lib/libcrypto.so.42.0.0 /usr/lib/
 COPY --from=builder /usr/bin/curl /usr/bin/
 COPY --from=builder /rootfs/curl /
 
-ADD food-safety-sample /
+ADD food-safety-service /
 ADD res/docker/ /res/docker
 
 ARG GIT_COMMIT=unspecified
 LABEL git_commit=$GIT_COMMIT
 
-CMD ["/food-safety-sample","-r","--profile=docker","--confdir=/res"]
+CMD ["/food-safety-service","-r","--profile=docker","--confdir=/res"]

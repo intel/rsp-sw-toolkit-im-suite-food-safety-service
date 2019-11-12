@@ -1,12 +1,12 @@
 {
-    "serviceName": "Food Safety Sample",
-    "loggingLevel": "debug",
+    "serviceName": "Food Safety service",
+    "loggingLevel": "info",
     "telemetryEndpoint": "",
     "telemetryDataStoreName": "",    
     "freezerReaderName": "FREEZER",
     "notificationServiceURL": "http://localhost:48060",
     "emailSubscribers": "your_email,second_email",
-    "trackingEPCs": "30143639F8419145BEEF0009,30143639F8419145BEEF0007",
+    "trackingEPCs": "30143639F8419145BEEF0009",
     "temperatureSensor": "C1:EE:03:79:EA:8C"
   }
   

@@ -1,0 +1,33 @@
+version: '3.4'
+
+networks:
+  main-net:
+
+volumes:
+  www-root:
+
+services:
+
+  food-safety:
+    image: rsp/food-safety-service:dev    
+    extra_hosts:
+      - "edgex-core-data:172.17.0.1"
+      - "edgex-support-logging:172.17.0.1"
+      - "edgex-core-consul:172.17.0.1"
+      - "edgex-core-command:172.17.0.1"
+      - "edgex-support-notifications:172.17.0.1"
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "5"
+    restart: always    
+    environment:
+      serviceName: "Food Safety service"
+      loggingLevel: "debug"
+      telemetryEndpoint: ""
+      telemetryDataStoreName: ""  
+      freezerReaderName: "FREEZER"
+      notificationServiceURL: "http://edgex-support-notifications:48060"
+      emailSubscribers: ""    
+      trackingEPCs: ""
+      temperatureSensor: ""

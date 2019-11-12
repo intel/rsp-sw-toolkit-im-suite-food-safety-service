@@ -22,7 +22,7 @@ app/**/*.test
 .idea/libraries/GOPATH__*.xml
 
 # Binaries
-food-safety-sample
+food-safety-service
 
 #Debug
 debug
@@ -30,7 +30,7 @@ debug.test
 
 #Ignoring Mongodata
 data/
-/food-safety-sample
+/food-safety-service
 
 #goreporter files
 
@@ -47,3 +47,5 @@ vendor/github.impcloud.net/RSP-Inventory-Suite/**/Jenkinsfile
 vendor/github.impcloud.net/RSP-Inventory-Suite/utilities/configuration/testData
 
 go.sum
+
+build/

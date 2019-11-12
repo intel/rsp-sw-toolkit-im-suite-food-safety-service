@@ -1,79 +1,77 @@
+PROJECT_NAME ?= food-safety-service
 
-STACK_NAME ?= Inventory-Suite-Dev
-SERVICE_NAME ?= food-safety-sample
-PROJECT_NAME ?= food-safety-sample
+# The default flags to use when calling submakes
+GNUMAKEFLAGS = --no-print-directory
 
-default: build
+GIT_SHA = $(shell git rev-parse HEAD)
 
-scale = docker service scale $(STACK_NAME)_$(SERVICE_NAME)=$1 $2
+GO_FILES = $(shell find . -type f -name '*.go')
+RES_FILES = $(shell find res/ -type f)
 
-wait_for_service =	@printf "Waiting for $(SERVICE_NAME) service to$1..."; \
-					while [  $2 -z $(get_id) ]; \
-                 	do \
-                 		printf "."; \
-                 		sleep 0.3;\
-                 	done; \
-                 	printf "\n";
+PROXY_ARGS =	--build-arg http_proxy=$(http_proxy) \
+				--build-arg https_proxy=$(https_proxy) \
+				--build-arg no_proxy=$(no_proxy) \
+				--build-arg HTTP_PROXY=$(HTTP_PROXY) \
+				--build-arg HTTPS_PROXY=$(HTTPS_PROXY) \
+				--build-arg NO_PROXY=$(NO_PROXY)
+
+EXTRA_BUILD_ARGS ?=
+
+touch_target_file = mkdir -p $(@D) && touch $@
 
 trap_ctrl_c = trap 'exit 0' INT;
 
-get_id = `docker ps -qf name=$(STACK_NAME)_$(SERVICE_NAME).1`
+compose = docker-compose
 
-log = docker logs $1$2 $(get_id) 2>&1
+log = docker-compose logs $1 $2 2>&1
 
-test =	echo "Go Testing..."; \
-		go test ./... $1
+.PHONY: build clean iterate iterate-d tail start stop rm deploy kill down fmt ps
 
-build:
-	$(MAKE) -C .. $(PROJECT_NAME)
+default: build
 
-iterate:
-	$(call scale,0,-d)
-	$(MAKE) build
-	# make sure it has stopped before we try and start it again
-	$(call wait_for_service, stop, !)
-	$(call scale,1,-d)
-	$(call wait_for_service, start)
-	$(MAKE) tail
+build: build/docker
+
+clean:
+	rm -rf build/*
+
+build/docker:
+	docker build --rm \
+		--build-arg GIT_TOKEN=$(GIT_TOKEN) \
+		$(PROXY_ARGS) \
+		$(EXTRA_BUILD_ARGS) \
+		-f Dockerfile_dev \
+		--label "git_sha=$(GIT_SHA)" \
+		-t rsp/$(PROJECT_NAME):dev \
+		.
+	@$(touch_target_file)
+
+iterate: build up
+
+iterate-d: build up-d
+	$(trap_ctrl_c) $(MAKE) tail
 
 restart:
-	$(call scale,0,-d)
-	$(call wait_for_service, stop, !)
-	$(call scale,1,-d)
-	$(call wait_for_service, start)
+	$(compose) restart $(args)
+
+kill:
+	$(compose) kill $(args)
 
 tail:
-	$(trap_ctrl_c) $(call log,-f --tail 10,$(args))
+	$(trap_ctrl_c) $(call log,-f --tail=10, $(args))
 
-stop:
-	$(call scale,0,$(args))
+down:
+	$(compose) down --remove-orphans $(args)
 
-start:
-	$(call scale,1,$(args))
+up: build
+	$(compose) up --remove-orphans $(args)
 
-stop-d:
-	$(call scale,0,-d)
+up-d: build
+	$(MAKE) up args="-d $(args)"
 
-start-d:
-	$(call scale,1,-d)
-
-wait-stop:
-	$(call scale,0,-d)
-	$(call wait_for_service, stop, !)
-
-wait-start:
-	$(call scale,1,-d)
-	$(call wait_for_service, start)
-
-scale:
-	$(call scale,$(n),$(args))
+deploy: up-d
 
 fmt:
 	go fmt ./...
 
-test:
-	@$(call test,$(args))
-
-force-test:
-	@$(call test,-count=1)
-
+ps:
+	$(compose) ps

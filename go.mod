@@ -1,4 +1,4 @@
-module github.impcloud.net/RSP-Inventory-Suite/food-safety-sample
+module github.impcloud.net/RSP-Inventory-Suite/food-safety-service
 
 go 1.12
 

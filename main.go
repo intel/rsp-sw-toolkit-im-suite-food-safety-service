@@ -31,15 +31,15 @@ import (
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
 	"github.com/edgexfoundry/go-mod-core-contracts/models"
 	log "github.com/sirupsen/logrus"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/config"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/notification"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/app/tag"
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/config"
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/notification"
+	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/tag"
 	"github.impcloud.net/RSP-Inventory-Suite/utilities/go-metrics"
 	reporter "github.impcloud.net/RSP-Inventory-Suite/utilities/go-metrics-influxdb"
 )
 
 const (
-	serviceKey = "food-safety-sample"
+	serviceKey = "food-safety-service"
 )
 
 const (
@@ -62,7 +62,7 @@ type params struct {
 }
 
 func main() {
-	mConfigurationError := metrics.GetOrRegisterGauge("food-safety-sample.Main.ConfigurationError", nil)
+	mConfigurationError := metrics.GetOrRegisterGauge("food-safety-service.Main.ConfigurationError", nil)
 
 	// Load config variables
 	err := config.InitConfig()
@@ -76,7 +76,7 @@ func main() {
 	log.WithFields(log.Fields{
 		"Method": "main",
 		"Action": "Start",
-	}).Info("Starting Food Safety Sample...")
+	}).Info("Starting Food Safety service...")
 
 	// Register a subscriber to EdgeX notification service
 	emails := strings.Split(config.AppConfig.EmailSubscribers, ",")

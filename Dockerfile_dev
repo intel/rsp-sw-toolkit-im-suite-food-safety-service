@@ -19,7 +19,7 @@ RUN git config --global credential.helper store
 ARG GIT_TOKEN
 RUN set +x && echo "https://$GIT_TOKEN:x-oauth-basic@github.impcloud.net" > ~/.git-credentials
 
-WORKDIR $GOPATH/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-sample
+WORKDIR $GOPATH/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-service
 
 # Download go modules first so they can be cached for faster subsequent builds
 COPY go.mod go.mod
@@ -63,10 +63,10 @@ COPY --from=builder /usr/lib/libcrypto.so.42.0.0 /usr/lib/
 COPY --from=builder /usr/bin/curl /usr/bin/
 COPY --from=builder /rootfs/curl /
 
-COPY --from=gobuilder /go/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/food-safety-sample /
-COPY --from=gobuilder /go/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-sample/res/docker/ /res/docker
+COPY --from=gobuilder /go/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-service/food-safety-service /
+COPY --from=gobuilder /go/src/github.impcloud.net/RSP-Inventory-Suite/food-safety-service/res/docker/ /res/docker
 
 ARG GIT_COMMIT=unspecified
 LABEL git_commit=$GIT_COMMIT
 
-CMD ["/food-safety-sample","-r","--profile=docker","--confdir=/res"]
+CMD ["/food-safety-service","-r","--profile=docker","--confdir=/res"]
