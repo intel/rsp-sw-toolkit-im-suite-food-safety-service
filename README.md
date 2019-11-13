@@ -1,7 +1,7 @@
 # Food Safety service
 
 Food safety service is a sample application that demonstrates how to combine Intel© RSP sensor data with a third-party temperature sensor from EdgeX platform to determine arrival of assets to a specific location (freezer) and ambient temperature of the area.
-This application also leverage EdgeX Alerts & Notification service to notify users via email.
+This application also leverages EdgeX Alerts & Notification service to notify users via email.
 
  ![Food Safety](food-safety.png)
 
