@@ -14,7 +14,7 @@ This application also leverages EdgeX Alerts & Notification service to notify us
 - `docker-compose`
 - `Intel rsp-sw-toolkit-gw`
 - `Intel inventory-suite`
-- `EdgeX`
+- `EdgeX Edinburgh release`
 
 Assumption is that Intel© RSP and temperature sensor are already configured and sending data to EdgeX. 
 
