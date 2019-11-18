@@ -1,6 +1,6 @@
 # Food Safety service
 
-Food safety service is a sample application that demonstrates how to combine Intel© RSP sensor data with a third-party temperature sensor from EdgeX platform to determine arrival of assets to a specific location (freezer) and ambient temperature of the area.
+Food safety service is a sample application that demonstrates how to combine Intel® RSP sensor data with a third-party temperature sensor from EdgeX platform to determine arrival of assets to a specific location (freezer) and ambient temperature of the area.
 This application also leverages EdgeX Alerts & Notification service to notify users via email.
 
  ![Food Safety](food-safety.png)
@@ -35,7 +35,7 @@ sudo GIT_TOKEN=... make -j iterate
 
 ### Configuration variables
 
-- `freezerReaderName` Name of the Intel© RSP readers for destination.
+- `freezerReaderName` Name of the Intel® RSP readers for destination.
 - `emailSubscribers` String comma separated of emails to receive notifications. Example: "your@email.com,your@email2.com"
 - `trackingEPCs` String comma separated of EPC tags that want to be tracked. Example: "30143639F8419145BEEF0000,30143639F8419145BEEF0001"
 - `temperatureSensor` EdgeX's device name of the temperature sensor for ambient temperature value.
