@@ -3,9 +3,6 @@ version: '3.4'
 networks:
   main-net:
 
-volumes:
-  www-root:
-
 services:
 
   food-safety:
