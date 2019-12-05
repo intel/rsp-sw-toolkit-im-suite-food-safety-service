@@ -1,7 +1,8 @@
 version: '3.4'
 
-networks:
-  main-net:
+secrets:
+  environment-variables:
+    file: ./secrets/configuration.json
 
 services:
 
@@ -28,3 +29,6 @@ services:
       emailSubscribers: ""    
       trackingEPCs: ""
       temperatureSensor: ""
+    secrets:
+      - source: environment-variables
+        target: configuration.json
