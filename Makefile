@@ -1,3 +1,9 @@
+# Apache v2 license
+#  Copyright (C) <2019> Intel Corporation
+#
+#  SPDX-License-Identifier: Apache-2.0
+#
+
 PROJECT_NAME ?= food-safety-service
 
 # The default flags to use when calling submakes
