@@ -32,7 +32,7 @@ services:
       telemetryDataStoreName: ""  
       freezerReaderName: "FREEZER"
       notificationServiceURL: "http://edgex-support-notifications:48060"
-      emailSubscribers: ""    
+      emailSubscribers: "email@test.com"    
       trackingEPCs: ""
       temperatureSensor: ""
     secrets:
