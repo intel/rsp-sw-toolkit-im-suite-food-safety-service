@@ -41,6 +41,7 @@ services:
         
   tempo-device-service:
     image: tempo-device-service:1.0.0
+    restart: always  
     extra_hosts:
       - "edgex-core-data:172.17.0.1"
       - "edgex-support-logging:172.17.0.1"
