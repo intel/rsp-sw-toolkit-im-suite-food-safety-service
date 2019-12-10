@@ -38,3 +38,14 @@ services:
     secrets:
       - source: environment-variables
         target: configuration.json
+        
+   tempo-device-service:
+    image: tempo-device-service:1.0.0
+    extra_hosts:
+      - "edgex-core-data:172.17.0.1"
+      - "edgex-support-logging:172.17.0.1"
+      - "edgex-core-consul:172.17.0.1"
+      - "edgex-core-command:172.17.0.1"
+      - "edgex-core-metadata:172.17.0.1"
+    ports:
+      - "9001:9001"
