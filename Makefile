@@ -66,7 +66,7 @@ tail:
 	$(trap_ctrl_c) $(call log,-f --tail=10, $(args))
 
 down:
-	$(compose) down --remove-orphans $(args)
+	docker stack rm Food-Safety-Stack
 
 up: build
 	$(compose) up --remove-orphans $(args)
@@ -74,7 +74,11 @@ up: build
 up-d: build
 	$(MAKE) up args="-d $(args)"
 
-deploy: up-d
+deploy: 
+	docker stack deploy \
+		--with-registry-auth \
+		--compose-file docker-compose.yml \
+		Food-Safety-Stack
 
 fmt:
 	go fmt ./...
