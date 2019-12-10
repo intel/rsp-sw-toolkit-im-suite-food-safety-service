@@ -39,7 +39,7 @@ services:
       - source: environment-variables
         target: configuration.json
         
-   tempo-device-service:
+  tempo-device-service:
     image: tempo-device-service:1.0.0
     extra_hosts:
       - "edgex-core-data:172.17.0.1"
