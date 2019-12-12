@@ -31,7 +31,7 @@ compose = docker-compose
 
 log = docker-compose logs $1 $2 2>&1
 
-.PHONY: build clean iterate iterate-d tail start stop rm deploy kill down fmt ps
+.PHONY: build clean iterate iterate-d tail start stop rm deploy kill stop fmt ps
 
 default: build
 
@@ -65,7 +65,7 @@ kill:
 tail:
 	$(trap_ctrl_c) $(call log,-f --tail=10, $(args))
 
-down:
+stop:
 	docker stack rm Food-Safety-Stack
 
 up: build
