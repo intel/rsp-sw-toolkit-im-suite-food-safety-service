@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/intel/rsp-sw-toolkit-im-suite-food-safety-service/app/tag"
 	log "github.com/sirupsen/logrus"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/tag"
 )
 
 const (
