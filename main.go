@@ -17,12 +17,12 @@ import (
 	"github.com/edgexfoundry/app-functions-sdk-go/appsdk"
 	"github.com/edgexfoundry/app-functions-sdk-go/pkg/transforms"
 	"github.com/edgexfoundry/go-mod-core-contracts/models"
+	"github.com/intel/rsp-sw-toolkit-im-suite-food-safety-service/app/config"
+	"github.com/intel/rsp-sw-toolkit-im-suite-food-safety-service/app/notification"
+	"github.com/intel/rsp-sw-toolkit-im-suite-food-safety-service/app/tag"
+	"github.com/intel/rsp-sw-toolkit-im-suite-utilities/go-metrics"
+	reporter "github.com/intel/rsp-sw-toolkit-im-suite-utilities/go-metrics-influxdb"
 	log "github.com/sirupsen/logrus"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/config"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/notification"
-	"github.impcloud.net/RSP-Inventory-Suite/food-safety-service/app/tag"
-	"github.impcloud.net/RSP-Inventory-Suite/utilities/go-metrics"
-	reporter "github.impcloud.net/RSP-Inventory-Suite/utilities/go-metrics-influxdb"
 )
 
 const (
