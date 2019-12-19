@@ -24,7 +24,7 @@ Assumption is that Intel© RSP and temperature sensor are already configured and
 Compile the Go source code, create the docker image, and start the docker-compose service
 
 ```bash
-sudo GIT_TOKEN=... make -j iterate
+sudo make -j iterate
 ```
 
 > The first time you run this it may take quite some time. Grab some :coffee:.
