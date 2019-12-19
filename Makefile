@@ -42,7 +42,6 @@ clean:
 
 build/docker:
 	docker build --rm \
-		--build-arg GIT_TOKEN=$(GIT_TOKEN) \
 		$(PROXY_ARGS) \
 		$(EXTRA_BUILD_ARGS) \
 		-f Dockerfile_dev \
